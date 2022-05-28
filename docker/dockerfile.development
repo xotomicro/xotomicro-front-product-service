@@ -1,4 +1,5 @@
 FROM node:16
+# ENV GITHUB_TOKEN=${GITHUB_TOKEN}
 
 WORKDIR /app
 RUN npm set "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}"
