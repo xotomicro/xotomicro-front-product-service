@@ -1,0 +1,6 @@
+FROM node:16
+ARG GITHUB_TOKEN
+WORKDIR /app
+RUN npm set "//npm.pkg.github.com/:_authToken=${GITHUB_TOKEN}"
+RUN yarn install
+CMD yarn && yarn start

@@ -1,0 +1,9 @@
+# IGNORE ALL HTML FILES:
+*.html
+
+# IGNORE TS BUILD INFO
+*.tsbuildinfo
+
+# IGNORE MARKDOWN FILES
+*.md
+

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    io.kompose.service: xotomicro-front-product-service
+  name: xotomicro-front-product-service
+spec:
+  ports:
+    - name: "7073"
+      port: 7073
+      targetPort: 80
+  selector:
+    io.kompose.service: xotomicro-front-product-service
+status:
+  loadBalancer: {}
