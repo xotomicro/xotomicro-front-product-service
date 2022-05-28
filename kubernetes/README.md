@@ -11,7 +11,7 @@ eval $(minikube docker-env) # tell docker that you want to use minikube for your
 
 ### 🏗 BUILD ALL DOCKER IMAGES BY DOCKER-COMPOSE
 ```shell
-docker-compose --env-file=.env build # build services with docker
+docker-compose --env-file=token.env build # build services with docker
 ```
 
 ### 🖥 OTHER USEFUL COMMANDS
