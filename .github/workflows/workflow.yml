@@ -1,0 +1,72 @@
+name: ci-cl
+
+on:
+    push:
+        branches:
+            - development
+    workflow_dispatch:
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        if: ${{ github.event_name != 'workflow_dispatch' }}
+        steps:
+            - uses: actions/checkout@v2
+
+            - uses: actions/cache@v2
+              with:
+                  path: "**/node_modules"
+                  key: ${{ runner.os }}-modules-${{ hashFiles('**/package.json') }}
+
+            - name: initialize npm
+              run: npm set "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}"
+
+            - name: install packages
+              run: yarn install
+
+            - name: run tests
+              run: yarn test:service
+
+    registries-compatibility-check:
+        runs-on: ubuntu-latest
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        steps:
+            - uses: actions/checkout@v2
+
+            - uses: actions/cache@v2
+              with:
+                  path: "**/node_modules"
+                  key: ${{ runner.os }}-modules-${{ hashFiles('**/package.json') }}
+
+            - name: initialize npm
+              run: npm set "//npm.pkg.github.com/:_authToken=${{ secrets.GITHUB_TOKEN }}"
+
+            - name: update registries
+              run: yarn registries:update
+
+            - name: install packages
+              run: yarn install
+
+            - name: run tests
+              run: yarn test:service
+
+    notify:
+        name: notify
+        runs-on: ubuntu-latest
+        needs:
+            - test
+        if: ${{ always() }}
+
+        steps:
+            - name: notify
+              uses: nobrayner/discord-webhook@v1
+              with:
+                  github-token: ${{ secrets.GITHUB_TOKEN }}
+                  discord-webhook: https://discord.com/api/webhooks/953748425340514396/6BnDkPGSo8SGKEIwNzCoIjJVAw8pblzd7A7lRwFsrQRTSxPjgdVcT8d5v3Y1vPJE3r_3
+                  username: "xotomicro"
+                  title: "${{ github.workflow }}: {{STATUS}}"
+                  description: "${{ github.event_name }} trigged this {{STATUS}}!"
+                  include-details: "true"
+                  color-success: "#4287f5"
+                  color-failure: "eb4034"
+                  color-cancelled: "0x42daf5"
